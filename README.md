@@ -5,30 +5,21 @@ Temat: http://forum.pasja-informatyki.pl/125794/cr-html-%231-tworzenie-stron-www
 
 ---
 
-Ten branch zawiera poprawki dotyczące samego kodu HTML. Tak, **wygląd strony się zmienił**, ale – z racji tego, że mówimy o kursie HTML – nie dodaję żadnego CSS-a.
+Ten branch zawiera dodatkową poprawkę ponad [branch `refactor`](https://github.com/CodersCommunity/CodeReview-HTML-01/tree/refactor).
 
 ---
 
-# Lista poprawek
+## Poprawka
 
-_Rzeczy zmienione, a oznaczone jako **preferencja** są po prostu moimi osobistymi preferencjami co do kodu HTML i nie są lepsze/gorsze od pierwotnego sposobu; są po prostu inne._
+_Ta poprawka jest przeznaczona **wyłącznie** dla serwera Apache. Wersje dla innych serwerów można znaleźć w [organizacji H5BP na GitHubie](https://github.com/h5bp?utf8=%E2%9C%93&query=server-configs-)._
 
-## Ogólne
 
-* Zmieniłem wcięcia w kodzie na IMO czytelniejsze (**preferencja**).
-* Usunąłem zamknięcie XML-owego ze znaczników bez zamknięcia (**preferencja**).
-* Zmieniłem nazwę `html` na wersję pisaną małymi literami w `DOCTYPE` (**preferencja**).
-* Zmieniłem nazwę kodowania na `UTF-8` (**preferencja**, choć dawniej [walidator się tego czepiał](http://tutorials.comandeer.pl/html5-blog.html#ustawienie-kodowania)).
+Zgodnie ze [specyfikacją HTML5](https://www.w3.org/TR/html5/document-metadata.html#other-pragma-directives), elementy`meta[http-equiv]` _de facto_ zastępują nagłówki HTTP:
 
-## `head`
+ > […] must use a name that is identical to an HTTP header registered in the Permanent Message Header Field Registry, and must have behavior identical to that described for the HTTP header.
 
-* Przeniosłem `meta[http-equiv="X-UA-Compatible"]` tuż po `meta[charset]` i **zostawiłem** te tagi jako pierwsze w `head` – wszystko z powodu [znanych bugów](https://github.com/h5bp/html5-boilerplate/blob/b5d6e7b1613fca24d250fa8e5bc7bcc3dd6002ef/dist/doc/html.md#the-order-of-the-title-and-meta-tags).
-* Usunąłem z `meta[http-equiv="X-UA-Compatible"]` fragment `,chrome=1`, gdyż Chrome Frame [nie istnieje od lat](http://blog.chromium.org/2013/06/retiring-chrome-frame.html).
+Dlatego też można (a wręcz **należy**!) przenieść ustawienie trybu kompatybilności dla IE do ustawień serwera, co dodatkowo [rozwiązuje kilka znanych problemów](https://github.com/h5bp/html5-boilerplate/blob/b5d6e7b1613fca24d250fa8e5bc7bcc3dd6002ef/dist/doc/html.md#x-ua-compatible).
 
-## `body`
+Wypada także zauważyć, że tryb kompatybilności jest [zdeprecjonowany w IE 11](https://msdn.microsoft.com/library/bg182625.aspx#docmode) i [usunięty w Edge](https://blogs.windows.com/msedgedev/2015/05/06/a-break-from-the-past-part-2-saying-goodbye-to-activex-vbscript-attachevent/).
 
-* Zostawiłem stronę bez dodawania znaczników sekcjonujących HTML5 (`article`) czy znacznika `main` – jest to na tyle prosta strona, że nie ma potrzeby dodatkowo jej "spulchniać".
-* Z racji tego, że _de facto_ mamy tutaj do czynienia z podziałem filmów na kategorie, to badzo dobrze nadaje się do tego [lista klucz-wartość (`dl`)](https://www.w3.org/TR/html5/grouping-content.html#the-dl-element), gdzie kluczem (`dt`) jest nazwa kategorii, a wartościami (`dd`; w tym przypadku mamy tylko po jednym filmie w kategorii, ale można ich umieścić więcej) – poszczególne filmy. Można się pokusić o zrobienie tego przy pomocy sekcji (`section`), gdzie każda kategoria byłaby odrębną sekcją, jej nazwa – nagłówkiem (w naszym wypadku `h2`), a same filmy – umieszczone w liście (`ul`) czy, jeśli dołączony byłby także ich opis, podsekcjami (`section > section`) z nagłówkiem. Niemniej `dl` IMO pasuje tutaj o wiele bardziej i nie ma potrzeby tworzyć dodatkowych sekcji.
-* Zamiast dwóch linków, sąsiadujących ze sobą i prowadzących do tej samej strony, stworzyłem z nich jeden (co może mieć np. wpływ na czytniki ekranowe). Dodatkowo usunąłem odstępy stworzone przy pomocy `br`, gdyż tego typu rzeczy należy robić w CSS.
-* **Każdy** obrazek **MUSI** mieć `[alt]`. Jeśli jest to obrazek dekoracyjny lub dublujący informacje z kontekstu, `[alt]` [**MUSI** być pusty](https://www.w3.org/TR/html5/embedded-content-0.html#a-graphical-representation-of-some-of-the-surrounding-text). Tak jest w tym wypadku: w linku jest już zawarta nazwa filmu, a screen z niego nie niesie żadnej istotnej, dodatkowej informacji (IMO to ozdobnik upiększający listę). Jeśli jednak kadr uzna się za istotny, należałoby opisać, co przedstawia.
-* Usunąłem `[target]`, bo to [średni pomysł](https://kornel.ski/pl/target).
+Ważny jest także fakt, że dołączanie `,chrome=1` jest niewskazane i bezsensowne, gdyż służyło włączaniu Chrome Frame (czyli dodatku odpalającego silnik Blink z Google Chrome'a w IE), który… [od lat nie istnieje](http://blog.chromium.org/2013/06/retiring-chrome-frame.html).
